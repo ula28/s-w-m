@@ -1,38 +1,51 @@
-import React from "react";
+import React, {FC} from "react";
 import s from './Dialogs.module.css'
-import {NavLink} from "react-router-dom";
+import {DialogItem} from "./dialogsItem/DialogsItem";
+import {Message} from "./message/Message";
+import {T_MainUsersContainer} from "./DialogsContainer";
 
-type T_DialogItem={
-    name:string
-    id:number
-}
-export const DialogItem=({name,id}:T_DialogItem)=>{
-    let path='/dialogs/'+ id
-    return <div className={s.dialog+' '+s.active}>
-        <NavLink to={path}>{name}</NavLink>
-    </div>
-}
-type T_Message={
-    message:string
-}
-const Message:React.FC<T_Message>=(props)=>{
-   const {message}=props
-    return <div className={s.dialog}>{message}</div>
-}
 
-export const Dialogs= ()=> {
+export const Dialogs:FC<T_MainUsersContainer
+    // {
+    // dialogsPage:T_dialogsPage,
+    // addMessage:()=>void
+    // onChangeHandler:(e: ChangeEvent<HTMLTextAreaElement>)=>void
+    // dispatch: (action: T_Action) => void,newMessage:string
+// }
+>=(props)=> {
+    const{dialogsPage, onChangeHandler,addMessage}=props
+    // const dialogs=[
+    //     {id:1,name:'Petya'},
+    //     {id:2,name:'Vasya'},
+    //     {id:3,name:'Innokent'},
+    //     {id:4,name:'Grigory'},
+    // ]
+    // const messages=[
+    //     {id:1,message:'hi'},
+    //     {id:2,message:'good'},
+    //     {id:3,message:'very good'},
+    //     {id:4,message:'sea'},
+    // ]
+    let messagesElement=dialogsPage.messages.map(m=> <Message message={m.message} key={m.id} />)
+    let dialogsElement=dialogsPage.dialogs.map(d=><DialogItem name={d.name} id={d.id} key={d.id}/>)
     return (
         <div className={s.dialogs}>
             <div className={s.dialog_items}>
-                <DialogItem name={"Petya"} id={1}/>
-                <DialogItem name={"Vasya"} id={2}/>
-                <DialogItem name={"Innokent"} id={3}/>
-                <DialogItem name={"Grigory"} id={4}/>
+                {dialogsElement}
             </div>
             <div className={s.messages}>
-                <Message message={'hi'}/>
-                <Message message={'good'}/>
-                <Message message={'very good'}/>
+                <div>{messagesElement}</div>
+                <div className={s.dialogs_block}>
+                <textarea placeholder="enter your mess" onChange={onChangeHandler}
+                          value={dialogsPage.newMessageBody}
+                    // ref={newMessageElement}
+                ></textarea>
+                </div>
+                <div>
+                    <button onClick={addMessage}>Add message</button>
+                </div>
+                {/*<Message message={messages[0].message} />*/}
+                {/*<Message message={messages[1].message}/>*/}
             </div>
         </div>
 

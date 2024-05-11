@@ -8,7 +8,7 @@ type T_Post={
 export const Post:React.FC< T_Post> =(props)=> {
     const{message, likes}=props
     return (
-            <div>
+            <div className={s.posts}>
                 <div className={s.postDescr}>
                     <img src="https://i.pinimg.com/564x/3d/50/a8/3d50a8be47f95da3a0a03eaaef83cdd9.jpg" alt="заяц"/>
                     {message}
