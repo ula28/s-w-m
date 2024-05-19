@@ -1,11 +1,13 @@
 import {connect} from "react-redux";
-import {Users} from "./users";
+import {Users} from "./usersС";
 import { T_RootState} from "../../redux/redux-store";
 import {followAC, setUsersAC, T_UserBody, T_UsersState, unFollowsAC} from "../../redux/users-reducer";
 import {Dispatch} from "redux";
 
 type T_mapStateToProps={
     usersPage:T_UsersState
+    pageSize:5,
+    totalUsersCount:0
 }
 type T_mapDispatchToProps={
     follow:(userId:number)=>void
@@ -16,7 +18,9 @@ export type T_MainUsersContainer= T_mapStateToProps & T_mapDispatchToProps
 
 export const mapStateToProps = (state: T_RootState): T_mapStateToProps => {
     return {
-        usersPage: state.UsersReducer
+        usersPage: state.UsersReducer,
+        pageSize:state.UsersReducer.pageSize,
+        totalUsersCount:state.UsersReducer.totalUsersCount
     }
 }
 export const mapDispatchToProps = (dispatch: Dispatch):T_mapDispatchToProps => {
