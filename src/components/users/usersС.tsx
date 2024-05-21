@@ -3,7 +3,7 @@ import {T_MainUsersContainer} from "./UsersContainer";
 import s from './users.module.css'
 import {T_UserBody, T_UsersState} from "../../redux/users-reducer";
 import axios from 'axios';
-import phot from "../../assets/images/photos.png"
+import photo from "../../assets/images/photos.png"
 
 
 export class Users extends React.Component<T_MainUsersContainer>{
@@ -16,20 +16,44 @@ export class Users extends React.Component<T_MainUsersContainer>{
     //             })
     // }
  componentDidMount() {
-     axios.get<T_UsersState>('https://social-network.samuraijs.com/api/1.0/users')
+     axios.get<T_UsersState>(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`)
+         .then(res => {
+             this.props.setUsers(res.data.items)
+             this.props.setTotalsUsersCount(res.data.totalCount)
+
+         })
+ }
+ onPageChanged=(p:number)=>{
+     this.props.setCurrentPage(p)
+     axios.get<T_UsersState>(`https://social-network.samuraijs.com/api/1.0/users?page=${p}&count=${this.props.pageSize}`)
          .then(res => {
              this.props.setUsers(res.data.items)
          })
  }
 
+
     render(){
+let pageCount=Math.ceil(this.props.totalCount/this.props.pageSize)
+        let pages=[]
+        for (let i=1;i<= pageCount;i++){
+            pages.push(i)
+        }
         return <div>
             {/*<button onClick={this.getUsers}>get users</button>*/}
+            <div>
+                {
+                    pages.map(p=>{
+                      return   <span className={this.props.currentPage===p ? s.selectedPage:''}
+                      onClick={(e)=>{this.onPageChanged(p)}}
+                      >{p}</span>
+                    })
+                }
+            </div>
             {
                 this.props.usersPage.items.map(u=>
                     <div key={u.id}>
                         <div>
-                            <img src={u.photos.small!=null?u.photos.small:phot} alt={'dd'} className={s .foto}/>
+                            <img src={u.photos.small!=null?u.photos.small:photo} alt={'dd'} className={s.foto}/>
                             {
                                 u.followed ?
                                     <button onClick={() => (this.props.unFollow(u.id))}>unfollow</button>
